@@ -2,48 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  runApp(const BarberApp());
+  runApp(const DentalApp());
 }
 
-class BarberApp extends StatelessWidget {
-  const BarberApp({super.key});
+class DentalApp extends StatelessWidget {
+  const DentalApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'صالون الحلاقة للشباب',
+      title: 'حجز عيادة الأسنان',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF121418),
-        cardColor: const Color(0xFF1E222B),
-        primaryColor: const Color(0xFFD4AF37),
+        scaffoldBackgroundColor: const Color(0xFF0F172A), // أزرق ليلي طبي
+        cardColor: const Color(0xFF1E293B),
+        primaryColor: const Color(0xFF0EA5E9), // أزرق سماوي
       ),
-      home: const BookingScreen(),
+      home: const DentalBookingScreen(),
     );
   }
 }
 
-class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+class DentalBookingScreen extends StatefulWidget {
+  const DentalBookingScreen({super.key});
 
   @override
-  State<BookingScreen> createState() => _BookingScreenState();
+  State<DentalBookingScreen> createState() => _DentalBookingScreenState();
 }
 
-class _BookingScreenState extends State<BookingScreen> {
+class _DentalBookingScreenState extends State<DentalBookingScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   String? _selectedTime;
+  String? _selectedService = 'فحص واستشارة'; // الخدمة الافتراضية
+
+  final List<String> _services = [
+    'فحص واستشارة',
+    'تنظيف وتلميع الأسنان',
+    'حشوة أسنان',
+    'قلع سن',
+    'تبييض الأسنان',
+    'تقويم الأسنان',
+  ];
 
   final List<String> _timeSlots = [
-    'صباحاً 09:00',
-    'صباحاً 10:00',
-    'صباحاً 11:00',
-    'ظهراً 12:00',
-    'ظهراً 01:00',
-    'ظهراً 02:00',
-    'عصراً 04:00',
+    'مساءً 04:00',
+    'مساءً 05:00',
     'مساءً 06:00',
+    'مساءً 07:00',
+    'مساءً 08:00',
+    'مساءً 09:00',
   ];
 
   Future<void> _sendToWhatsApp() async {
@@ -66,9 +74,10 @@ class _BookingScreenState extends State<BookingScreen> {
     }
 
     final String message = Uri.encodeComponent(
-      "طلب حجز جديد 💈\n\n"
+      "حجز موعد عيادة أسنان 🦷\n\n"
       "👤 الاسم: $name\n"
       "📞 الهاتف: $phone\n"
+      "🩺 الخدمة المطلوبة: $_selectedService\n"
       "⏰ الوقت المختار: $_selectedTime",
     );
 
@@ -90,24 +99,24 @@ class _BookingScreenState extends State<BookingScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 10),
+              // الهيدر والأيقونات الطبية
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.content_cut, color: Color(0xFFD4AF37), size: 36),
+                  Icon(Icons.medical_services_outlined, color: Color(0xFF0EA5E9), size: 36),
                   SizedBox(width: 15),
-                  Icon(Icons.brush, color: Color(0xFFD4AF37), size: 36),
+                  Icon(Icons.clean_hands_outlined, color: Color(0xFF0EA5E9), size: 36),
                   SizedBox(width: 15),
-                  Icon(Icons.dry_cleaning, color: Color(0xFFD4AF37), size: 36),
+                  Icon(Icons.health_and_safety_outlined, color: Color(0xFF0EA5E9), size: 36),
                 ],
               ),
               const SizedBox(height: 15),
               const Text(
-                'صالون الحلاقة للشباب',
+                'مركز العناية بالأسنان',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24, 
@@ -115,27 +124,31 @@ class _BookingScreenState extends State<BookingScreen> {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 35),
+              const SizedBox(height: 30),
+
+              // الاسم
               TextField(
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'الاسم الكامل',
+                  hintText: 'اسم المريض الكامل',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(Icons.person, color: Color(0xFFD4AF37)),
+                  prefixIcon: const Icon(Icons.person, color: Color(0xFF0EA5E9)),
                   filled: true,
-                  fillColor: const Color(0xFF1E222B),
+                  fillColor: const Color(0xFF1E293B),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Color(0xFF2D3342)),
+                    borderSide: const BorderSide(color: Color(0xFF334155)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+                    borderSide: const BorderSide(color: Color(0xFF0EA5E9)),
                   ),
                 ),
               ),
               const SizedBox(height: 15),
+
+              // الهاتف
               TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -143,29 +156,63 @@ class _BookingScreenState extends State<BookingScreen> {
                 decoration: InputDecoration(
                   hintText: 'رقم الهاتف',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(Icons.phone, color: Color(0xFFD4AF37)),
+                  prefixIcon: const Icon(Icons.phone, color: Color(0xFF0EA5E9)),
                   filled: true,
-                  fillColor: const Color(0xFF1E222B),
+                  fillColor: const Color(0xFF1E293B),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Color(0xFF2D3342)),
+                    borderSide: const BorderSide(color: Color(0xFF334155)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Color(0xFFD4AF37)),
+                    borderSide: const BorderSide(color: Color(0xFF0EA5E9)),
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+
+              // اختيار نوع العلاج/الخدمة
               const Text(
-                'اختر وقت الحجز',
-                style: TextStyle(
-                  fontSize: 18, 
-                  color: Colors.white70, 
-                  fontWeight: FontWeight.w600,
+                'نوع الحجز / الخدمة',
+                style: TextStyle(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E293B),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: const Color(0xFF334155)),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedService,
+                    dropdownColor: const Color(0xFF1E293B),
+                    isExpanded: true,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF0EA5E9)),
+                    items: _services.map((String service) {
+                      return DropdownMenuItem<String>(
+                        value: service,
+                        child: Text(service),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedService = newValue;
+                      });
+                    },
+                  ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 25),
+
+              // أوقات الحجز المسائية (العيادات غالباً تعمل مساءً)
+              const Text(
+                'اختر وقت المراجعة',
+                style: TextStyle(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -189,10 +236,10 @@ class _BookingScreenState extends State<BookingScreen> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFFD4AF37) : const Color(0xFF1E222B),
+                        color: isSelected ? const Color(0xFF0EA5E9) : const Color(0xFF1E293B),
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: isSelected ? const Color(0xFFD4AF37) : const Color(0xFF2D3342),
+                          color: isSelected ? const Color(0xFF0EA5E9) : const Color(0xFF334155),
                           width: 1.5,
                         ),
                       ),
@@ -209,7 +256,10 @@ class _BookingScreenState extends State<BookingScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 35),
+
+              const SizedBox(height: 30),
+
+              // زر الإرسال
               ElevatedButton.icon(
                 onPressed: _sendToWhatsApp,
                 style: ElevatedButton.styleFrom(
@@ -222,12 +272,8 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
                 icon: const Icon(Icons.send, color: Colors.white),
                 label: const Text(
-                  'تأكيد الحجز عبر الواتساب',
-                  style: TextStyle(
-                    fontSize: 17, 
-                    fontWeight: FontWeight.bold, 
-                    color: Colors.white,
-                  ),
+                  'حجز الموعد عبر الواتساب',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ],
